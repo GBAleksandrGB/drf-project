@@ -13,13 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.urls import path
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from authors.views import AuthorViewSet, BiographyViewSet, ArticleViewSet, BookViewSet
+from authors.views import AuthorViewSet, BiographyViewSet, ArticleViewSet, \
+    BookViewSet
 from users.views import UserModelViewSet
-from project.views import ProjectViewSet, TodoViewSet
+from project.views import ProjectViewSet, TodoViewSet, UserCustomViewSet, \
+    ProjectFilterView
 
 
 router = DefaultRouter()
@@ -29,13 +32,13 @@ router.register('authors', AuthorViewSet)
 router.register('biographies', BiographyViewSet)
 router.register('articles', ArticleViewSet)
 router.register('books', BookViewSet)
-router.register('projects', ProjectViewSet)
+router.register('projects', ProjectViewSet, basename='projects')
 router.register('todos', TodoViewSet)
-
+router.register('base_users', UserCustomViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
+    path('filters/kwargs/<str:project_name>/', ProjectFilterView.as_view()),
 ]
-

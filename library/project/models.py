@@ -6,7 +6,6 @@ from library import settings
 class Project(models.Model):
     project_name = models.CharField(
         max_length=64,
-        unique=True,
         verbose_name='Название проекта'
     )
     project_url = models.URLField(
