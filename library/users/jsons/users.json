@@ -1,0 +1,16 @@
+[
+	{
+		"username": "Olegek",
+		"first_name": "Олег",
+		"last_name": "Хахатонов",
+		"email": "oleg.hahtonov@django.com",
+		"password": "123"
+	},
+	{
+		"username": "Oreshek",
+		"first_name": "Виталий",
+		"last_name": "Орешкин",
+		"email": "vitaliy.oreshkin@django.com",
+		"password": "123"
+	}
+]
