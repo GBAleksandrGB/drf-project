@@ -2,7 +2,7 @@ import React from 'react';
 import '../index.css';
 
 
-const UserItem = ({user}) => {
+const UserItem = ({ user }) => {
 	return (
 		<tr>
 			<td>{user.username}</td>
@@ -13,7 +13,7 @@ const UserItem = ({user}) => {
 	);
 }
 
-const UserList = ({users}) => {
+const UserList = ({ users }) => {
 	return (
 		<table>
 			<th>Username</th>
