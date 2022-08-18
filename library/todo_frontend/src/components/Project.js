@@ -5,9 +5,9 @@ import '../index.css';
 const ProjectItem = ({ project }) => {
     return (
         <tr>
-            <td>{project.project_name}</td>
-            <td>{project.project_url}</td>
-            <td>{project.project_users}</td>
+            <td>{project.projectName}</td>
+            <td>{project.projectUrl}</td>
+            <td>{project.projectUsers}</td>
         </tr>
     );
 }
@@ -15,9 +15,9 @@ const ProjectItem = ({ project }) => {
 const ProjectList = ({ projects }) => {
     return (
         <table>
-            <th>Project_name</th>
-            <th>Project_url</th>
-            <th>Project_users</th>
+            <th>ProjectName</th>
+            <th>ProjectUrl</th>
+            <th>ProjectUsers</th>
             {projects.map((project) => <ProjectItem project={project} />)}
         </table>
     );

@@ -5,12 +5,12 @@ import '../index.css';
 const TodoItem = ({ todo }) => {
     return (
         <tr>
-            <td>{todo.todo_project_name}</td>
-            <td>{todo.todo_text}</td>
-            <td>{todo.creatd_at}</td>
-            <td>{todo.updated_at}</td>
-            <td>{todo.todo_user}</td>
-            <td>{todo.is_active}</td>
+            <td>{todo.todoProjectName}</td>
+            <td>{todo.todoText}</td>
+            <td>{todo.creatdAt}</td>
+            <td>{todo.updatedAt}</td>
+            <td>{todo.todoUser}</td>
+            <td>{todo.isActive}</td>
         </tr>
     );
 }
@@ -18,11 +18,11 @@ const TodoItem = ({ todo }) => {
 const TodoList = ({ todos }) => {
     return (
         <table>
-            <th>Todo_project_name</th>
-            <th>Todo_text</th>
-            <th>Creatd_at</th>
-            <th>Updated_at</th>
-            <th>Is_active</th>
+            <th>TodoProjectName</th>
+            <th>TodoText</th>
+            <th>CreatdAt</th>
+            <th>UpdatedAt</th>
+            <th>IsActive</th>
             {todos.map((todo) => <TodoItem todo={todo} />)}
         </table>
     );
