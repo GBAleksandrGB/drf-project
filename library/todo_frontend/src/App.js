@@ -1,17 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-//import logo from './logo.svg';
-// import './App.css';
+import Cookies from 'universal-cookie';
 import UserList from './components/User.js';
 import ProjectList from './components/Project.js';
 import TodoList from './components/Todo.js';
+import LoginForm from './components/auth.js';
 import {
 	BrowserRouter,
 	Route,
 	Link,
 	Routes,
-	Navigate,
-	Outlet
+	Navigate
 } from 'react-router-dom'
 
 
@@ -21,29 +20,76 @@ class App extends React.Component {
 		this.state = {
 			'users': [],
 			'projects': [],
-			'todos': []
+			'todos': [],
+			'token': ''
 		};
-	}
+	};
+
+	set_token(token) {
+		const cookies = new Cookies()
+		cookies.set('token', token)
+		this.setState({ 'token': token }, () => this.load_data())
+	};
+
+	is_authenticated() {
+		return !!this.state.token;
+	};
+
+	logout() {
+		this.set_token('')
+	};
+
+	get_token_from_storage() {
+		const cookies = new Cookies()
+		const token = cookies.get('token')
+		this.setState({ 'token': token }, () => this.load_data())
+	};
+
+
+	get_token(username, password) {
+		axios.post('http://127.0.0.1:8000/api-token-auth/', {
+			username: username,
+			password: password
+		}).then(response => {
+			this.set_token(response.data['token'])
+		}).catch(error => alert('Неверный логин или пароль'))
+	};
+
+	get_headers() {
+		let headers = { 'Content-Type': 'application/json' }
+		if (this.is_authenticated()) {
+			headers['Authorization'] = 'Token ' + this.state.token
+		};
+		return headers;
+	};
+
+	load_data() {
+		const headers = this.get_headers();
+		axios.get('http://127.0.0.1:8000/api/users/', { headers })
+			.then(response => {
+				console.log(response.data)
+				this.setState({ 'users': response.data });
+			}).catch(error => console.log(error));
+
+		axios.get('http://127.0.0.1:8000/api/projects/', { headers })
+			.then(response => {
+				console.log(response.data)
+				this.setState({ 'projects': response.data });
+			}).catch(error => {
+				console.log(error);
+			});
+		axios.get('http://127.0.0.1:8000/api/todos/', { headers })
+			.then(response => {
+				console.log(response.data)
+				this.setState({ 'todos': response.data });
+			}).catch(error => {
+				console.log(error)
+			});
+	};
 
 	componentDidMount() {
-		axios.get('http://127.0.0.1:8000/api/users/')
-			.then(response => {
-				const users = response.data
-				this.setState({ 'users': users })
-			}).catch(error => console.log(error));
-
-		axios.get('http://127.0.0.1:8000/api/projects/')
-			.then(response => {
-				const projects = response.data
-				this.setState({ 'projects': projects })
-			}).catch(error => console.log(error));
-
-		axios.get('http://127.0.0.1:8000/api/todos/')
-			.then(response => {
-				const todos = response.data
-				this.setState({ 'todos': todos })
-			}).catch(error => console.log(error));
-	}
+		this.get_token_from_storage();
+	};
 
 	render() {
 		return (
@@ -87,31 +133,9 @@ class App extends React.Component {
 											Заметки
 										</Link>
 									</li>
-									<li class="nav-item dropdown">
-										<a class="nav-link dropdown-toggle"
-											href="profile" role="button"
-											data-bs-toggle="dropdown"
-											aria-expanded="false">
-											Профиль
-										</a>
-										<ul class="dropdown-menu">
-											<li><a class="dropdown-item" href="#">
-												Action
-											</a>
-											</li>
-											<li><a class="dropdown-item" href="#">
-												Another action
-											</a>
-											</li>
-											<li><hr class="dropdown-divider" /></li>
-											<li><a class="dropdown-item" href="#">
-												Выйти
-											</a>
-											</li>
-										</ul>
-									</li>
 									<li class="nav-item">
-										<a class="nav-link">Регистрация</a>
+										{this.is_authenticated() ? <button
+											onClick={() => this.logout()}>Logout</button> : <Link to='/login'>Login</Link>}
 									</li>
 								</ul>
 								<form class="d-flex" role="search">
@@ -125,7 +149,6 @@ class App extends React.Component {
 							</div>
 						</div>
 					</nav>
-					{/* <Outlet /> */}
 					<div class="d-flex flex-grow-1 align-items-start mt-5">
 						<Routes>
 							<Route path='/' element={<Navigate to='users' />} />
@@ -140,6 +163,13 @@ class App extends React.Component {
 							<Route
 								path='todos'
 								element={<TodoList todos={this.state.todos} />}
+							/>
+							<Route
+								path="login"
+								element={<LoginForm get_token={
+									(username, password) =>
+										this.get_token(username, password)} />
+								}
 							/>
 							<Route path='*' element={
 								<p>Страница не найдена</p>

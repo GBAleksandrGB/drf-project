@@ -1,17 +1,18 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 
-const BookItem = ({ item }) => {
+const BookItem = ({ book }) => {
     return (
         <tr>
-            <td>{item.id}</td>
-            <td>{item.name}</td>
-            <td>{item.author.name}</td>
+            <td>{book.id}</td>
+            <td>{book.name}</td>
+            <td>{book.authors}</td>
         </tr>
     );
 }
 
-const BookList = ({ items }) => {
+const BookList = ({ books }) => {
     return (
         <table>
             <tr>
@@ -19,7 +20,8 @@ const BookList = ({ items }) => {
                 <th>NAME</th>
                 <th>AUHTOR</th>
             </tr>
-            {items.map((item) => <BookItem item={item} />)}
+            {books.map((book) => <BookItem book={book} />)}
+            <Outlet />
         </table>
     );
 }

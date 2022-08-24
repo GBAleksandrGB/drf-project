@@ -23,8 +23,8 @@ class UserCustomViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
     serializer_class = UserSerializer
 
 
-class ProjectLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 10
+# class ProjectLimitOffsetPagination(LimitOffsetPagination):
+#     default_limit = 10
 
 
 class ProjectViewSet(viewsets.ViewSet):
@@ -36,7 +36,7 @@ class ProjectViewSet(viewsets.ViewSet):
         CamelCaseJSONParser,
         MultiPartParser
     ]
-    pagination_class = ProjectLimitOffsetPagination
+    # pagination_class = ProjectLimitOffsetPagination
 
     def list(self, request):
         projects = Project.objects.all()
@@ -57,8 +57,8 @@ class ProjectFilterView(generics.ListAPIView):
         return Project.objects.filter(project_name__contains=name)
 
 
-class TodoLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 20
+# class TodoLimitOffsetPagination(LimitOffsetPagination):
+#     default_limit = 20
 
 
 class TodoFilter(django_filters.FilterSet):
@@ -81,7 +81,7 @@ class TodoViewSet(viewsets.ModelViewSet):
         MultiPartParser
     ]
     filterset_class = TodoFilter
-    pagination_class = TodoLimitOffsetPagination
+    # pagination_class = TodoLimitOffsetPagination
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

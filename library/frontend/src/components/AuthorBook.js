@@ -1,20 +1,21 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Outlet } from 'react-router-dom';
 
 
-const BookItem = ({ item }) => {
+const BookItem = ({ book }) => {
     return (
         <tr>
-            <td>{item.id}</td>
-            <td>{item.name}</td>
-            <td>{item.author.name}</td>
+            <td>{book.id}</td>
+            <td>{book.name}</td>
+            <td>{book.authors}</td>
         </tr>
     );
 }
 
-const AuthorBookList = ({ items }) => {
+const AuthorBookList = ({ books }) => {
     let { id } = useParams();
-    let filtered_items = items.filter((item) => item.author.id === +id)
+    console.log(id)
+    let filtered_items = books.filter((book) => book.authors.id === Number(id));
     return (
         <table>
             <tr>
@@ -22,7 +23,8 @@ const AuthorBookList = ({ items }) => {
                 <th>NAME</th>
                 <th>AUTHOR</th>
             </tr>
-            {filtered_items.map((item) => <BookItem item={item} />)}
+            {filtered_items.map((book) => <BookItem book={book} />)}
+            <Outlet />
         </table>
     );
 }
