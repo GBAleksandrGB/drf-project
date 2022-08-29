@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Author, Biography, Article, Book
 from .serializers import AuthorSerializer, ArticleSerializer, \
-    BiographySerializer, BookSerializer
+    BiographySerializer, BookSerializer, BookSerializerBase
 
 
 class AuthorViewSet(ModelViewSet):
@@ -30,3 +30,8 @@ class BookViewSet(ModelViewSet):
     serializer_class = BookSerializer
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method in ['GET']:
+            return BookSerializer
+        return BookSerializerBase

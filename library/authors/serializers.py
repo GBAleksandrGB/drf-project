@@ -23,8 +23,13 @@ class ArticleSerializer(serializers.ModelSerializer):
         exclude = ['name']
 
 
+class BookSerializerBase(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+
 class BookSerializer(serializers.ModelSerializer):
-    authors = serializers.StringRelatedField(many=True)
+    authors = AuthorSerializer()
 
     class Meta:
         model = Book
