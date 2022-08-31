@@ -89,13 +89,12 @@ class TestBookViewSet(APITestCase):
     #     self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_edit_admin(self):
-        author = Author.objects.create(name='Пушкин', birthday_year=1799)
+        authors= Author.objects.create(name='Пушкин', birthday_year=1799)
         book = Book.objects.create(name='Пиковая дама')
         admin = User.objects.create_superuser(
             'admin', 'admin@admin.com',
             'admin123456'
         )
-        book.authors.set([author])
         self.client.login(username='admin', password='admin123456')
         response = self.client.put(f'/api/books/{book.id}/', {
             'name': 'Руслан и Людмила',
