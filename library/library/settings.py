@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework',
@@ -44,7 +45,7 @@ INSTALLED_APPS = [
     'users',
     'project',
     'corsheaders',
-    # 'django_filters',
+    'django_filters',
     'drf_yasg',
 ]
 
@@ -186,3 +187,8 @@ REST_FRAMEWORK = {
 # SWAGGER_SETTINGS = {
 #     'VALIDATOR_URL': 'http://localhost:8189',
 # }
+
+
+GRAPHENE = {
+    "SCHEMA": "project.schema.schema"
+}

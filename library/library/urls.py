@@ -21,6 +21,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
+from graphene_django.views import GraphQLView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -60,16 +61,16 @@ router.register('base_users', UserCustomViewSet, basename='users')
 
 urlpatterns = [
     # re_path(r'^api/(?P<version>\d\.\d)/users/$', UserListAPIView.as_view()),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
-         name='schema-redoc'),
-    path('swagger-ui/', TemplateView.as_view(
-        template_name='swagger-ui.html',
-        extra_context={'schema_url': 'openapi-schema'}
-    ), name='swagger-ui'),
+    # re_path(r'^swagger(?P<format>\.json|\.yaml)$',
+    #         schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    # path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
+    #      name='schema-swagger-ui'),
+    # path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
+    #      name='schema-redoc'),
+    # path('swagger-ui/', TemplateView.as_view(
+    #     template_name='swagger-ui.html',
+    #     extra_context={'schema_url': 'openapi-schema'}
+    # ), name='swagger-ui'),
     path('api/users/0.1', include('userapp.urls', namespace='0.1')),
     path('api/users/0.2', include('userapp.urls', namespace='0.2')),
     path('admin/', admin.site.urls),
@@ -79,4 +80,5 @@ urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
 ]
