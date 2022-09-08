@@ -12,8 +12,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    project_users = UserSerializer(many=True)
-
     class Meta:
         model = Project
         fields = ['project_name', 'project_url', 'project_users']

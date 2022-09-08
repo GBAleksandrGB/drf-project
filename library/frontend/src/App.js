@@ -3,6 +3,7 @@ import axios from 'axios';
 import BookList from './components/Book.js';
 import AuthorBookList from './components/AuthorBook.js';
 import AuthorList from './components/Author.js';
+import BookForm from './components/BookForm.js';
 import {
   BrowserRouter,
   Route,
@@ -80,6 +81,30 @@ class App extends React.Component {
     this.get_token_from_storage();
   };
 
+  deleteBook(id) {
+    const headers = this.get_headers()
+    axios.delete(`http://127.0.0.1:8000/api/books/${id}`, { headers })
+      .then(response => {
+        this.load_data();
+        }).catch(error => {
+        console.log(error)
+        this.setState({ books: [] })
+      });
+    };
+
+  createBook(name, author) {
+    const headers = this.get_headers()
+    const data = { name: name, author: author }
+    axios.post(`http://127.0.0.1:8000/api/books/`, data, { headers })
+      .then(response => {
+        let new_book = response.data
+        const author = this.state.authors.filter((item) => item.id ===
+          new_book.author)[0]
+        new_book.author = author
+        this.setState({ books: [...this.state.books, new_book] })
+      }).catch(error => console.log(error))
+  };
+
   render() {
     return (
       <div className="App">
@@ -118,6 +143,15 @@ class App extends React.Component {
                 (username, password) => this.get_token(username, password)} />
               }
             />
+            <Route
+              path='/books/create'
+              element={() =>
+                <BookForm authors={this.state.authors} createBook={(name, author) =>
+                  this.createBook(name, author)} />}
+            />
+            <Route exact path='/books' element={<BookList
+              books={this.state.books}
+              deleteBook={(id) => this.deleteBook(id)} />} />
             <Route
               path='*'
               element={<p>Страница не найдена</p>}

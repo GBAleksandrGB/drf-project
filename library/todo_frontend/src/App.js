@@ -5,6 +5,8 @@ import UserList from './components/User.js';
 import ProjectList from './components/Project.js';
 import TodoList from './components/Todo.js';
 import LoginForm from './components/auth.js';
+import TodoForm from './components/TodoForm.js';
+import ProjectForm from './components/ProjectForm.js';
 import {
 	BrowserRouter,
 	Route,
@@ -24,6 +26,63 @@ class App extends React.Component {
 			'token': ''
 		};
 	};
+
+	createProject(project_name, project_url, project_users) {
+		const headers = this.get_headers()
+		const data = {
+			project_name: project_name,
+			project_url: project_url,
+			project_users: project_users
+		}
+		axios.post(`http://127.0.0.1:8000/api/projects/`, data, { headers })
+			.then(response => {
+				let new_project = response.data
+				const users = this.state.users.filter((item) => item.id ===
+					new_project.users)[0]
+				new_project.users = users
+				this.setState({ projects: [...this.state.projects, new_project] })
+			}).catch(error => console.log(error))
+	}
+
+	createTodo(todo_project_name, todo_text, todo_user, is_active) {
+		const headers = this.get_headers()
+		const data = {
+			todo_project_name: todo_project_name,
+			todo_text: todo_text,
+			todo_user: todo_user,
+			is_active: is_active
+		}
+		axios.post(`http://127.0.0.1:8000/api/todos/`, data, { headers })
+			.then(response => {
+				let new_todo = response.data
+				const user = this.state.todos.filter((item) => item.id ===
+					new_todo.user)[0]
+				new_todo.user = user
+				this.setState({ todos: [...this.state.todos, new_todo] })
+			}).catch(error => console.log(error))
+	}
+
+	deleteProject(id) {
+		const headers = this.get_headers()
+		axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, { headers })
+			.then(response => {
+				this.load_data();
+			}).catch(error => {
+				console.log(error)
+				this.setState({ projects: [] })
+			});
+	};
+
+	deleteTodo(id) {
+		const headers = this.get_headers()
+		axios.delete(`http://127.0.0.1:8000/api/todos/${id}`, { headers })
+			.then(response => {
+				this.load_data();
+			}).catch(error => {
+				console.log(error)
+				this.setState({ todos: [] })
+			});
+	}
 
 	set_token(token) {
 		const cookies = new Cookies()
@@ -157,18 +216,40 @@ class App extends React.Component {
 								element={<UserList users={this.state.users} />}
 							/>
 							<Route
-								path='projects'
-								element={<ProjectList projects={this.state.projects} />}
-							/>
-							<Route
-								path='todos'
-								element={<TodoList todos={this.state.todos} />}
-							/>
-							<Route
 								path="login"
 								element={<LoginForm get_token={
 									(username, password) =>
 										this.get_token(username, password)} />
+								}
+							/>
+							<Route
+								path='/projects/create'
+								element={<ProjectForm
+									projects={this.state.projects}
+									createProject={(project_name, project_url, project_users) =>
+										this.createProject(project_name, project_url, project_users)} />}
+							/>
+							<Route
+								path='/projects'
+								element={
+									<ProjectList
+										projects={this.state.projects}
+										deleteProject={(id) => this.deleteProject(id)} />
+								}
+							/>
+							<Route
+								path='/todos/create'
+								element={<TodoForm
+									todos={this.state.todos}
+									createTodo={(todo_project_name, todo_text, todo_user, is_active) =>
+										this.createTodo(todo_project_name, todo_text, todo_user, is_active)} />}
+							/>
+							<Route
+								path='/todos'
+								element={
+									<TodoList
+										todos={this.state.todos}
+										deleteTodo={(id) => this.deleteTodo(id)} />
 								}
 							/>
 							<Route path='*' element={
